@@ -1,28 +1,28 @@
 from TDAs.Cola import Cola
 
 # IMPLEMENTACIÓN DE NODOS Y SUS FUNCIONES
-class nodoArista():
+class nodo_arista():
   def __init__(self, info, destino):
     self.info = info
     self.destino = destino
     self.sig = None
 
-class nodoVertice():
+class nodo_vertice():
   def __init__(self, info):
     self.info = info
     self.sig = None
     self.visitado = False
     self.adyacentes = Arista()
 
-def adyacentes(vertice):
-  aux = vertice.adyacentes.inicio
+def adyacentes(vertice: nodo_vertice):
+  aux: nodo_arista = vertice.adyacentes.inicio
   while aux is not None:
     print(aux.destino, aux.info)
     aux = aux.sig
 
-def esAdyacente(vertice, destino):
+def es_adyacente(vertice: nodo_vertice, destino):
   resultado = False
-  aux = vertice.adyacentes.inicio
+  aux: nodo_arista = vertice.adyacentes.inicio
   while aux is not None and not resultado:
     if aux.destino == destino:
       resultado = True
@@ -35,8 +35,8 @@ class Arista():
     self.inicio = None
     self.tamanio = 0
 
-def agregarArista(origen, dato, destino):
-  nodo = nodoArista(dato, destino)
+def agregar_arista(origen: Arista, dato, destino):
+  nodo = nodo_arista(dato, destino)
   if origen.inicio is None or origen.inicio.destino > destino:
     nodo.sig = origen.inicio
     origen.inicio = nodo
@@ -50,13 +50,13 @@ def agregarArista(origen, dato, destino):
     ant.sig = nodo
   origen.tamanio += 1
 
-def buscarArista(vertice, clave):
+def buscar_arista(vertice, clave):
   aux = vertice.adyacentes.inicio
   while aux is not None and aux.destino != clave:
     aux = aux.sig
   return aux
 
-def eliminarArista(vertice, destino):
+def eliminar_arista(vertice, destino):
   x = None
   if vertice.inicio.destino == destino:
     x = vertice.inicio.info
@@ -81,8 +81,8 @@ class Grafo():
     self.dirigido = dirigido
     self.tamanio = 0
 
-  def insertarVertice(self, dato):
-    nodo = nodoVertice(dato)
+  def insertar_vertice(self, dato):
+    nodo = nodo_vertice(dato)
     if self.inicio is None or self.inicio.info > dato:
       nodo.sig = self.inicio
       self.inicio = nodo
@@ -96,12 +96,7 @@ class Grafo():
       ant.sig = nodo
     self.tamanio += 1
 
-  def insertarArista(self, dato, origen, destino):
-    agregarArista(origen.adyacentes, dato, destino.info)
-    if not self.dirigido:
-      agregarArista(destino.adyacentes, dato, origen.info)
-
-  def eliminarVertice(self, clave):
+  def eliminar_vertice(self, clave):
     x = None
     if self.inicio.info == clave:
       x = self.inicio.info
@@ -121,11 +116,19 @@ class Grafo():
       aux = self.inicio
       while aux is not None:
         if aux.adyacentes.inicio is not None:
-          eliminarArista(aux.adyacentes, clave)
+          eliminar_arista(aux.adyacentes, clave)
         aux = aux.sig
     return x
 
-  def buscarVertice(self, clave):
+  def insertar_arista(self, dato, origen: nodo_vertice, destino: nodo_vertice):
+    agregar_arista(origen.adyacentes, dato, destino.info)
+    if not self.dirigido:
+      agregar_arista(destino.adyacentes, dato, origen.info)
+
+  def eliminar_arista(self, vertice, destino):
+    eliminar_arista(vertice, destino)
+
+  def buscar_vertice(self, clave):
     aux = self.inicio
     while aux is not None and aux.info != clave:
       aux = aux.sig
@@ -134,36 +137,36 @@ class Grafo():
   def tamanio(self):
     return self.tamanio
 
-  def grafoVacio(self):
+  def grafo_vacio(self):
     return self.inicio is None
 
-  def existePaso(self, origen, destino):
+  def existe_paso(self, origen, destino):
     resultado = False
     if (not origen.visitado):
       origen.visitado = True
-      vAdyacentes = origen.adyacentes.inicio
-      while vAdyacentes is not None and not resultado:
-        adyacente = self.buscarVertice(vAdyacentes.destino)
+      v_adyacentes = origen.adyacentes.inicio
+      while v_adyacentes is not None and not resultado:
+        adyacente = self.buscarVertice(v_adyacentes.destino)
         if adyacente.info == destino.info:
           return True
         elif not adyacente.visitado:
           resultado = self.existePaso(adyacente, destino)
-        vAdyacentes = vAdyacentes.sig
+        v_adyacentes = v_adyacentes.sig
     return resultado
 
-  def marcarNoVisitado(self):
+  def marcar_no_visitado(self):
     aux = self.inicio
     while aux is not None:
       aux.visitado = False
       aux = aux.sig
 
-  def barridoVertices(self):
+  def barrido_vertices(self):
     aux = self.inicio
     while aux is not None:
       print(aux.info)
       aux = aux.sig
 
-  def barridoProfundidad(self, vertice):
+  def barrido_profundidad(self, vertice):
     while vertice is not None:
       if not vertice.visitado:
         vertice.visitado = True
@@ -176,7 +179,7 @@ class Grafo():
           adyacentes = adyacentes.sig
       vertice = vertice.sig
 
-  def barridoAmplitud(self, vertice):
+  def barrido_amplitud(self, vertice):
     cola = Cola()
     while vertice is not None:
       if not vertice.visitado:
@@ -197,47 +200,47 @@ class Grafo():
 if __name__ == '__main__':
     
   grafo = Grafo()
-  a = nodoVertice("A")
-  grafo.insertarVertice(a.info)
-  b = nodoVertice("B")
-  grafo.insertarVertice(b.info)
-  d = nodoVertice("D")
-  grafo.insertarVertice(d.info)
-  c = nodoVertice("C")
-  grafo.insertarVertice(c.info)
-  e = nodoVertice("E")
-  grafo.insertarVertice(e.info)
-  f = nodoVertice("F")
-  grafo.insertarVertice(f.info)
+  a = nodo_vertice("A")
+  grafo.insertar_vertice(a.info)
+  b = nodo_vertice("B")
+  grafo.insertar_vertice(b.info)
+  d = nodo_vertice("D")
+  grafo.insertar_vertice(d.info)
+  c = nodo_vertice("C")
+  grafo.insertar_vertice(c.info)
+  e = nodo_vertice("E")
+  grafo.insertar_vertice(e.info)
+  f = nodo_vertice("F")
+  grafo.insertar_vertice(f.info)
 
-  grafo.insertarArista(7, a, b)
-  grafo.insertarArista(5, a, d)
-  grafo.insertarArista(5, a, c)
-  grafo.insertarArista(4, b, d)
-  grafo.insertarArista(11, b, e)
-  grafo.insertarArista(6, e, f)
-  grafo.insertarArista(9, c, f)
-  grafo.insertarArista(1, f, d)
-  grafo.insertarArista(18, c, e)
-  grafo.insertarArista(2, d, c)
+  grafo.insertar_arista(7, a, b)
+  grafo.insertar_arista(5, a, d)
+  grafo.insertar_arista(5, a, c)
+  grafo.insertar_arista(4, b, d)
+  grafo.insertar_arista(11, b, e)
+  grafo.insertar_arista(6, e, f)
+  grafo.insertar_arista(9, c, f)
+  grafo.insertar_arista(1, f, d)
+  grafo.insertar_arista(18, c, e)
+  grafo.insertar_arista(2, d, c)
 
   adyacentes(a)
-  print(esAdyacente(a, "C"))
-  print(buscarArista(a, "B").info)
-  a = grafo.buscarVertice("A")
+  print(es_adyacente(a, "C"))
+  print(buscar_arista(a, "B").info)
+  a = grafo.buscar_vertice("A")
   print(a.info)
-  print(grafo.existePaso(a, b))
+  print(grafo.existe_paso(a, b))
 
   print("Barrido vertices")
-  grafo.barridoVertices()
+  grafo.barrido_vertices()
 
-  grafo.marcarNoVisitado()
+  grafo.marcar_no_visitado()
   print("Barrido profundidad")
-  grafo.barridoProfundidad(a)
-  grafo.marcarNoVisitado()
+  grafo.barrido_profundidad(a)
+  grafo.marcar_no_visitado()
 
   print("Barrido amplitud")
-  grafo.barridoAmplitud(a)
-  grafo.marcarNoVisitado()
+  grafo.barrido_amplitud(a)
+  grafo.marcar_no_visitado()
 
   print('grafo')

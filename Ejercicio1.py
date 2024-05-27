@@ -7,4 +7,15 @@ Autores:
 """
 from Implementacion.RedSocial import RedSocial
 
-redSocial = RedSocial()
+redSocial = RedSocial(dirigido = False)
+
+# Crear usuarios
+redSocial.agregarUsuario('Marlon Mora')
+redSocial.agregarUsuario('Luis Edward')
+redSocial.agregarUsuario('Daniel Ruiz')
+
+# Agregar relaciones
+redSocial.agregarRelacion('Marlon Mor=a', 'Luis Edward')
+
+# Mostrar conexiones
+redSocial.mostrarConexiones()
