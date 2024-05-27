@@ -37,8 +37,8 @@ class RedSocial:
   def mostrar_conexiones(self):
     self.grafo.ver_conexiones()
 
-  def usuarios_estan_relacionados(self) -> bool:
-    ...
+  def usuarios_estan_relacionados(self, usuario1, usuario2) -> bool:
+    self.grafo.existe_paso(usuario1, usuario2)
 
   def recorrido_en_profundidad(self):
     ...
