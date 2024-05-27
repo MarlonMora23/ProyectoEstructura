@@ -197,6 +197,13 @@ class Grafo():
             adyacentes = adyacentes.sig
       vertice = vertice.sig
 
+  def ver_conexiones(self):
+      aux = self.inicio
+      while aux is not None:
+          print(f"Conexiones de {aux.info}:")
+          adyacentes(aux)
+          aux = aux.sig
+
 if __name__ == '__main__':
     
   grafo = Grafo()

@@ -10,12 +10,13 @@ from Implementacion.RedSocial import RedSocial
 redSocial = RedSocial(dirigido = False)
 
 # Crear usuarios
-redSocial.agregarUsuario('Marlon Mora')
-redSocial.agregarUsuario('Luis Edward')
-redSocial.agregarUsuario('Daniel Ruiz')
+redSocial.agregar_usuario('Marlon Mora')
+redSocial.agregar_usuario('Luis Edward')
+redSocial.agregar_usuario('Daniel Ruiz')
 
 # Agregar relaciones
-redSocial.agregarRelacion('Marlon Mor=a', 'Luis Edward')
+redSocial.agregar_relacion('Marlon Mora', 'Luis Edward')
+redSocial.agregar_relacion('Luis Edward', 'Daniel Ruiz')
 
 # Mostrar conexiones
-redSocial.mostrarConexiones()
+redSocial.mostrar_conexiones()

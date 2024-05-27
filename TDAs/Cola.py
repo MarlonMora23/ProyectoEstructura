@@ -31,53 +31,53 @@ class Cola():
     return dato
     
   def mostrar(self):
-    nodoActual = self.frente
+    nodo_actual = self.frente
     cadena = ''
     vez = 0
 
-    while nodoActual != None:
+    while nodo_actual != None:
       if vez == 0:
-        cadena += f'{nodoActual.dato} < --- Frente de la cola\n'
+        cadena += f'{nodo_actual.dato} < --- Frente de la cola\n'
         vez = 1
-      elif nodoActual.siguiente is None:
-        cadena += f'{nodoActual.dato} < ----- Final de la cola\n'
+      elif nodo_actual.siguiente is None:
+        cadena += f'{nodo_actual.dato} < ----- Final de la cola\n'
       else:
-        cadena += f'{nodoActual.dato} \n'
+        cadena += f'{nodo_actual.dato} \n'
             
-      nodoActual = nodoActual.siguiente
+      nodo_actual = nodo_actual.siguiente
 
     print(f'{cadena} \n')
 
-  def colaVacia(self):
+  def cola_vacia(self):
     return self.frente is None
     
-  def enFrente(self):
+  def en_frente(self):
     return self.frente.dato
     
-  def obtenerTamano(self):
+  def obtener_tamano(self):
     return self.tamano
     
-  def moverAlFinal(self):
+  def mover_al_final(self):
     dato = self.atencion()
     self.arribo(dato)
     return dato
     
   def mostrar(self):
     print("Lista de los datos en la cola:")
-    nodoActual = self.frente
+    nodo_actual = self.frente
     cadena = ""
     vez = 0
-    while nodoActual is not None:
+    while nodo_actual is not None:
       if vez == 0:
-        cadena += f"{nodoActual.dato} <--- frente de la cola \n"
+        cadena += f"{nodo_actual.dato} <--- frente de la cola \n"
         vez = 1
-      elif nodoActual.siguiente is None:
-        cadena += f"{nodoActual.dato} <--- final de la cola \n"
+      elif nodo_actual.siguiente is None:
+        cadena += f"{nodo_actual.dato} <--- final de la cola \n"
       else:
-        cadena += f"{nodoActual.dato} \n"
+        cadena += f"{nodo_actual.dato} \n"
             
-      # Mueve nodoActual al siguiente nodo en cada iteración
-      nodoActual = nodoActual.siguiente
+      # Mueve nodo_actual al siguiente nodo en cada iteración
+      nodo_actual = nodo_actual.siguiente
 
     print(cadena)
     print()
