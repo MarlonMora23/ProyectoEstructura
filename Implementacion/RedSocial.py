@@ -18,14 +18,7 @@ class RedSocial:
     
 
   def agregar_relacion(self, nombre_usuario1: str, nombre_usuario2: str) -> None: 
-    # Buscar el Vertice del usuario
-    nodo_usuario1 = self.buscar_usuario(nombre_usuario1)
-    nodo_usuario2 = self.buscar_usuario(nombre_usuario2)
-
-    # Verificar si los usuarios existen
-    if not self.verificar_usuarios(nodo_usuario1, nodo_usuario2, nombre_usuario1, nombre_usuario2):
-      return
-
+    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1, nombre_usuario2)
     self.grafo.insertar_arista(1, nodo_usuario1, nodo_usuario2)
 
     print(f'Agregada la conexion entre {nombre_usuario1} y {nombre_usuario2}')
@@ -57,17 +50,10 @@ class RedSocial:
 
 
   def usuarios_estan_relacionados(self, nombre_usuario1: str, nombre_usuario2: str) -> None:
-    # Buscar el Vertice del usuario
-    nodo_usuario1 = self.buscar_usuario(nombre_usuario1)
-    nodo_usuario2 = self.buscar_usuario(nombre_usuario2)
+    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1, nombre_usuario2)
+    estan_relacionados = self.grafo.existe_paso(nodo_usuario1, nodo_usuario2)
 
-    # Verificar si los usuarios existen
-    if not self.verificar_usuarios(nodo_usuario1, nodo_usuario2, nombre_usuario1, nombre_usuario2):
-      return
-    
-    si_relacionados = self.grafo.existe_paso(nodo_usuario1, nodo_usuario2)
-
-    if not si_relacionados:
+    if not estan_relacionados:
       print(f'Los usuarios {nombre_usuario1} y {nombre_usuario2} NO están relacionados directa o indirectamente')
       return
     
@@ -75,11 +61,7 @@ class RedSocial:
 
 
   def recorrido_en_profundidad(self, nombre_usuario: str) -> None:
-    nodo_usuario = self.buscar_usuario(nombre_usuario)
-
-    # Verificar si el usuario existe
-    if not self.verificar_usuarios(nodo_usuario, nombre_usuario):
-      return
+    nodo_usuario = self.validar_usuario(nombre_usuario)[0]
 
     print('Barrido en profundidad')
     self.grafo.marcar_no_visitado()
@@ -87,11 +69,7 @@ class RedSocial:
     self.grafo.marcar_no_visitado()
 
   def recorrido_en_anchura(self, nombre_usuario: str) -> None:
-    nodo_usuario = self.buscar_usuario(nombre_usuario)
-
-    # Verificar si el usuario existe
-    if not self.verificar_usuarios(nodo_usuario, nombre_usuario):
-      return
+    nodo_usuario = self.validar_usuario(nombre_usuario)[0]
 
     print('Barrido en anchura')
     self.grafo.marcar_no_visitado()
@@ -100,14 +78,7 @@ class RedSocial:
 
 
   def amigos_en_comun(self, nombre_usuario1: str, nombre_usuario2: str) -> None:
-    # Buscar el Vertice del usuario
-    nodo_usuario1 = self.buscar_usuario(nombre_usuario1)
-    nodo_usuario2 = self.buscar_usuario(nombre_usuario2)
-
-    # Verificar si los usuarios existen
-    if not self.verificar_usuarios(nodo_usuario1, nodo_usuario2, nombre_usuario1, nombre_usuario2):
-      return
-    
+    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1, nombre_usuario2)
     amigos_comunes = self.grafo.vertices_comunes(nodo_usuario1, nodo_usuario2)
 
     if len(amigos_comunes) == 0:
@@ -118,8 +89,12 @@ class RedSocial:
     for i in amigos_comunes:
       print(i)
 
-  def cantidad_amigos(self):
-    ...
+
+  def cantidad_amigos(self, nombre_usuario: str) -> None:
+    nodo_usuario = self.validar_usuario(nombre_usuario)[0]
+    cant_amigos = self.grafo.cantidad_de_conexiones(nodo_usuario)
+
+    print(f'{nombre_usuario} tiene {cant_amigos} amigos')
 
 
   # Operaciones clave
@@ -140,13 +115,34 @@ class RedSocial:
 
 
   # Operaciones complementarias
+  def validar_usuario(self, *args):
+    nombre_usuarios = []
+    nodo_usuarios = []
+
+    for i in range(len(args)):
+      # Obtener usuarios de los parámetros
+      nombre_usuarios.append(args[i])
+
+      # Buscar el vertice del usuario
+      nodo_usuarios.append(self.buscar_usuario(nombre_usuarios[i]))
+
+      # Verificar si el vertice existe
+      if not self.verificar_usuarios(nodo_usuarios[i], nombre_usuarios[i]):
+        return
+    
+    return nodo_usuarios
+  
+
   def buscar_usuario(self, nombre_usuario) -> nodo_vertice | None:
     return self.grafo.buscar_vertice(nombre_usuario)
 
 
   def verificar_usuarios(self, *args) -> bool:
-    usuarios = args[0::2]  # Obtiene los nodos de usuario de args
-    nombres = args[1::2]   # Obtiene los nombres de usuario de args
+    # Obtener los nodos de usuario de args
+    usuarios = args[0::2]  
+
+    # Obtener los nombres de usuario de args
+    nombres = args[1::2]   
     
     for usuario, nombre in zip(usuarios, nombres):
         if usuario is None:

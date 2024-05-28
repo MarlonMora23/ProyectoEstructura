@@ -40,13 +40,13 @@ red_social.usuarios_estan_relacionados(MARLON, IAN)
 red_social.recorrido_en_profundidad(LUIS)
 
 # Recorrido en Anchura (BFS)
-red_social.recorrido_en_anchura(MARLON)
+red_social.recorrido_en_anchura(JHONATAN)
 
-#  Amigos en Común
+# Amigos en Común
 red_social.amigos_en_comun(MARLON, DANIEL)
 
 # Cantidad de amigos
-
+red_social.cantidad_amigos(JHONATAN)
 
 # Recomendaciones de amigos
 

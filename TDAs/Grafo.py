@@ -227,6 +227,9 @@ class Grafo():
           adyacentes_vertice2 = adyacentes_vertice2.sig
 
     return vertices_comunes
+  
+  def cantidad_de_conexiones(self, vertice: nodo_vertice) -> int:
+    return vertice.adyacentes.tamanio
 
 if __name__ == '__main__':
     
