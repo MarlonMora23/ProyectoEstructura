@@ -16,9 +16,13 @@ class nodo_vertice():
 
 def adyacentes(vertice: nodo_vertice):
   aux: nodo_arista = vertice.adyacentes.inicio
+  resultado = {}
   while aux is not None:
-    print(aux.destino, aux.info)
+    resultado[aux.destino] = aux.info
+    # print(aux.destino, aux.info)
     aux = aux.sig
+  
+  return resultado
 
 def es_adyacente(vertice: nodo_vertice, destino):
   resultado = False
@@ -140,17 +144,17 @@ class Grafo():
   def grafo_vacio(self):
     return self.inicio is None
 
-  def existe_paso(self, origen, destino):
+  def existe_paso(self, origen: nodo_vertice, destino: nodo_vertice):
     resultado = False
     if (not origen.visitado):
       origen.visitado = True
-      v_adyacentes = origen.adyacentes.inicio
+      v_adyacentes: nodo_arista = origen.adyacentes.inicio
       while v_adyacentes is not None and not resultado:
-        adyacente = self.buscarVertice(v_adyacentes.destino)
+        adyacente = self.buscar_vertice(v_adyacentes.destino)
         if adyacente.info == destino.info:
           return True
         elif not adyacente.visitado:
-          resultado = self.existePaso(adyacente, destino)
+          resultado = self.existe_paso(adyacente, destino)
         v_adyacentes = v_adyacentes.sig
     return resultado
 
@@ -166,31 +170,31 @@ class Grafo():
       print(aux.info)
       aux = aux.sig
 
-  def barrido_profundidad(self, vertice):
+  def barrido_profundidad(self, vertice: nodo_vertice):
     while vertice is not None:
       if not vertice.visitado:
         vertice.visitado = True
         print(vertice.info)
         adyacentes = vertice.adyacentes.inicio
         while adyacentes is not None:
-          adyacente = self.buscarVertice(adyacentes.destino)
+          adyacente = self.buscar_vertice(adyacentes.destino)
           if not adyacente.visitado:
-            self.barridoProfundidad(adyacente)
+            self.barrido_profundidad(adyacente)
           adyacentes = adyacentes.sig
       vertice = vertice.sig
 
-  def barrido_amplitud(self, vertice):
+  def barrido_amplitud(self, vertice: nodo_vertice):
     cola = Cola()
     while vertice is not None:
       if not vertice.visitado:
         vertice.visitado = True
         cola.arribo(vertice)
-        while not cola.colaVacia():
+        while not cola.cola_vacia():
           nodo = cola.atencion()
           print(nodo.info)
           adyacentes = nodo.adyacentes.inicio
           while adyacentes is not None:
-            adyacente = self.buscarVertice(adyacentes.destino)
+            adyacente = self.buscar_vertice(adyacentes.destino)
             if not adyacente.visitado:
               adyacente.visitado = True
               cola.arribo(adyacente)
@@ -198,11 +202,31 @@ class Grafo():
       vertice = vertice.sig
 
   def ver_conexiones(self):
-      aux = self.inicio
-      while aux is not None:
-          print(f"Conexiones de {aux.info}:")
-          adyacentes(aux)
-          aux = aux.sig
+    aux = self.inicio
+    conexiones = []
+    while aux is not None:
+        conexiones.append([aux.info, adyacentes(aux)])
+        aux = aux.sig
+
+    return conexiones
+
+  def vertices_comunes(self, vertice1: nodo_vertice, vertice2: nodo_vertice) -> list:
+    vertices_comunes = []
+
+    adyacentes_vertice1 = vertice1.adyacentes.inicio
+    adyacentes_vertice2 = vertice2.adyacentes.inicio
+
+    while adyacentes_vertice1 is not None and adyacentes_vertice2 is not None:
+      if adyacentes_vertice1.destino == adyacentes_vertice2.destino:
+          vertices_comunes.append(adyacentes_vertice1.destino)
+          adyacentes_vertice1 = adyacentes_vertice1.sig
+          adyacentes_vertice2 = adyacentes_vertice2.sig
+      elif adyacentes_vertice1.destino < adyacentes_vertice2.destino:
+          adyacentes_vertice1 = adyacentes_vertice1.sig
+      else:
+          adyacentes_vertice2 = adyacentes_vertice2.sig
+
+    return vertices_comunes
 
 if __name__ == '__main__':
     
