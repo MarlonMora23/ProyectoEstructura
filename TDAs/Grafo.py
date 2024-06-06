@@ -1,4 +1,7 @@
 from TDAs.Cola import Cola
+import networkx as nx
+import matplotlib.pyplot as plt
+import pickle
 
 # IMPLEMENTACIÓN DE NODOS Y SUS FUNCIONES
 class nodo_arista():
@@ -165,10 +168,13 @@ class Grafo():
       aux = aux.sig
 
   def barrido_vertices(self):
+    barrido = []
     aux = self.inicio
     while aux is not None:
-      print(aux.info)
+      barrido.append(aux.info)
       aux = aux.sig
+
+    return barrido
 
   def barrido_profundidad(self, vertice: nodo_vertice):
     while vertice is not None:
@@ -209,6 +215,22 @@ class Grafo():
         aux = aux.sig
 
     return conexiones
+  
+  def visualizar_grafo(self) -> None:
+        conexiones = self.ver_conexiones()
+        G = nx.Graph()
+        
+        for vertice, adyacentes in conexiones:
+            G.add_node(vertice.title())
+            for adyacente in adyacentes:
+                G.add_edge(vertice.title(), adyacente.title())
+        
+        # Dibujar el grafo
+        plt.figure(figsize=(16, 12))
+        pos = nx.spring_layout(G) 
+        nx.draw(G, pos, with_labels=True, node_size=4000, node_color='skyblue', font_color='black', edge_color='gray', font_weight='bold')
+        plt.title("Visualización del Grafo")
+        plt.show()
 
   def vertices_comunes(self, vertice1: nodo_vertice, vertice2: nodo_vertice) -> list:
     vertices_comunes = []
@@ -230,6 +252,113 @@ class Grafo():
   
   def cantidad_de_conexiones(self, vertice: nodo_vertice) -> int:
     return vertice.adyacentes.tamanio
+
+  def recomendar_vertices(self, vertice: nodo_vertice) -> list:
+    vertices_directos = set(adyacentes(vertice))
+    posibles_vertices = set()
+    
+    self.marcar_no_visitado()
+    vertice.visitado = True
+    
+    for directo in vertices_directos:
+        vertice_directo = self.buscar_vertice(directo)
+        if vertice_directo and not vertice_directo.visitado:
+            vertice_directo.visitado = True
+            adyacentes_de_directo = adyacentes(vertice_directo)
+            for a in adyacentes_de_directo:
+                if a != vertice.info and a not in vertices_directos:
+                    posibles_vertices.add(a)
+    
+    return list(posibles_vertices)
+  
+  def detectar_comunidades(self, tamano_minimo):
+    def bron_kerbosch(R: set, P: set, X: set):
+        if len(P) == 0 and len(X) == 0 and len(R) >= tamano_minimo:
+            cliques.append(R)
+        while P:
+            v = P.pop()
+            vecinos = set(adyacentes(self.buscar_vertice(v)))
+            bron_kerbosch(R.union([v]), P.intersection(vecinos), X.intersection(vecinos))
+            X.add(v)
+
+    cliques = []
+    P = set()
+    aux = self.inicio
+    while aux is not None:
+        P.add(aux.info)
+        aux = aux.sig
+    
+    bron_kerbosch(set(), P, set())
+    return cliques
+  
+  def es_conexo(self):
+    def dfs(vertice, visitados):
+        visitados.add(vertice.info)
+        adyacentes = vertice.adyacentes.inicio
+        while adyacentes is not None:
+            adyacente = self.buscar_vertice(adyacentes.destino)
+            if adyacente.info not in visitados:
+                dfs(adyacente, visitados)
+            adyacentes = adyacentes.sig
+    
+    # Empezar desde el primer vértice
+    if self.inicio is None:
+        return True  # Un grafo vacío puede considerarse conexo
+    
+    visitados = set()
+    dfs(self.inicio, visitados)
+    
+    # Verificar si todos los vértices han sido visitados
+    aux = self.inicio
+    while aux is not None:
+        if aux.info not in visitados:
+            return False
+        aux = aux.sig
+    
+    return True
+
+  def vertice_con_mas_conexiones(self):
+      if self.inicio is None:
+          return None  
+      
+      max_conexiones = -1
+      vertice_max_conexiones = None
+      
+      aux = self.inicio
+      while aux is not None:
+          num_conexiones = self.cantidad_de_conexiones(aux)
+          if num_conexiones > max_conexiones:
+              max_conexiones = num_conexiones
+              vertice_max_conexiones = aux.info
+          aux = aux.sig
+      
+      return vertice_max_conexiones, max_conexiones
+  
+  def vertice_con_menos_conexiones(self):
+      if self.inicio is None:
+          return None  
+      
+      min_conexiones = float('inf')
+      vertice_min_conexiones = None
+      
+      aux = self.inicio
+      while aux is not None:
+          num_conexiones = self.cantidad_de_conexiones(aux)
+          if num_conexiones < min_conexiones:
+              min_conexiones = num_conexiones
+              vertice_min_conexiones = aux.info
+          aux = aux.sig
+      
+      return vertice_min_conexiones, min_conexiones
+
+  def guardar_grafo(self, direccion_archivo):
+        with open(direccion_archivo, 'wb') as file:
+            pickle.dump(self, file)
+
+  @staticmethod
+  def cargar_grafo(direccion_archivo):
+      with open(direccion_archivo, 'rb') as file:
+          return pickle.load(file)
 
 if __name__ == '__main__':
     
@@ -266,7 +395,8 @@ if __name__ == '__main__':
   print(grafo.existe_paso(a, b))
 
   print("Barrido vertices")
-  grafo.barrido_vertices()
+  resultado = grafo.barrido_vertices()
+  print(resultado)
 
   grafo.marcar_no_visitado()
   print("Barrido profundidad")
