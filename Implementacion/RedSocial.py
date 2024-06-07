@@ -5,8 +5,8 @@ Clase para gestionar la red social
 from TDAs.Grafo import Grafo, nodo_vertice
 
 class RedSocial:
-  def __init__(self, dirigido = True) -> None:
-    self.grafo = Grafo(dirigido)
+  def __init__(self) -> None:
+    self.grafo = Grafo(dirigido=False)
 
 
   # Operaciones básicas
@@ -18,7 +18,7 @@ class RedSocial:
     
 
   def agregar_relacion(self, nombre_usuario1: str, nombre_usuario2: str) -> None: 
-    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1, nombre_usuario2)
+    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1.lower(), nombre_usuario2.lower())
 
     if nodo_usuario1 and nodo_usuario2:
       self.grafo.insertar_arista(1, nodo_usuario1, nodo_usuario2)
@@ -27,16 +27,22 @@ class RedSocial:
 
 
   def eliminar_usuario(self, nombre_usuario:str) -> None:
-    self.grafo.eliminar_vertice(nombre_usuario)
+    nodo_usuario = self.validar_usuario(nombre_usuario)[0]
 
-    print(f'Usuario {nombre_usuario.title()} eliminado de la red social.')
+    if nodo_usuario:
+      self.grafo.eliminar_vertice(nombre_usuario)
+
+      print(f'Usuario {nombre_usuario.title()} eliminado de la red social.')
 
 
   def eliminar_relaciones(self, nombre_usuario1: str, nombre_usuario2: str) -> None:
-    self.grafo.eliminar_arista(nombre_usuario1, nombre_usuario2)
+    nodo_usuario1, nodo_usuario2 = self.validar_usuario(nombre_usuario1.lower(), nombre_usuario2.lower())
 
-    print(f'Eliminada la conexion entre {nombre_usuario1.title()} y {nombre_usuario2.title()}')
+    if nodo_usuario1 and nodo_usuario2:
+      self.grafo.eliminar_arista(nombre_usuario1, nombre_usuario2)
 
+      print(f'Eliminada la conexion entre {nombre_usuario1.title()} y {nombre_usuario2.title()}')
+    
 
   def mostrar_conexiones(self) -> None:
     usuarios_conectados = self.grafo.ver_conexiones()

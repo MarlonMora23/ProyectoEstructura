@@ -5,43 +5,13 @@ Autores:
   Marlon Daniel Mora
   Luis Edward Mosquera
 """
+
 from Implementacion.RedSocial import RedSocial
-
-red_social = RedSocial(dirigido = False)
-direccion_archivo_red_social = 'Implementacion/red_social.pkl'
-
-# Cargar la red social desde un archivo si existe, de lo contrario crear una nueva
-try:
-    red_social.cargar_red_social(direccion_archivo_red_social)
-    print("Red social cargada desde el archivo.")
-except FileNotFoundError:
-    print("Archivo no encontrado. Se ha creado una nueva red social.")
-
-# # Crear usuarios
-# MARLON = 'marlon mora'
-# LUIS = 'luis edward'
-# DANIEL = 'daniel ruiz'
-# IAN = 'ian arango'
-# JHONATAN = 'jhonatan velazco'
-
-# # Agregar Usuarios
-# red_social.agregar_usuario(MARLON)
-# red_social.agregar_usuario(LUIS)
-# red_social.agregar_usuario(DANIEL)
-# red_social.agregar_usuario(IAN)
-# red_social.agregar_usuario(JHONATAN)
-
-# # Agregar relaciones
-# red_social.agregar_relacion(MARLON, LUIS)
-# red_social.agregar_relacion(LUIS, DANIEL)
-# red_social.agregar_relacion(MARLON, IAN)
-# red_social.agregar_relacion(IAN, DANIEL)
-# red_social.agregar_relacion(IAN, JHONATAN)
 
 def imprimir_titulo():
   print()
   print('='*30)
-  print('Red Social (Estructura de datos)')
+  print('Red Social con Grafos')
   print('='*30)
   print()
 
@@ -77,22 +47,22 @@ def validar_opcion() -> int:
       return validar_opcion()
   
 # Operaciones Basicas
-def agregar_usuario() -> None:
+def agregar_usuario(red_social: RedSocial) -> None:
   nombre = input('\nDigite el nombre del usuario: ')
   red_social.agregar_usuario(nombre)
 
-def agregar_relacion() -> None:
+def agregar_relacion(red_social: RedSocial) -> None:
   print('\nIngrese los nombres de los usuarios que quiere agregar la relacion')
   usuario1 = input('Usuario 1: ')
   usuario2 = input('Usuario 2: ')
 
   red_social.agregar_relacion(usuario1, usuario2)
 
-def eliminar_usuario() -> None:
+def eliminar_usuario(red_social: RedSocial) -> None:
   nombre = input('\nIngrese el nombre de el usuario a eliminar: ')
   red_social.eliminar_usuario(nombre)
 
-def eliminar_relacion() -> None:
+def eliminar_relacion(red_social: RedSocial) -> None:
   print('\nIngrese los nombres de los que quiere eliminar la relacion')
   usuario1 = input('Usuario 1: ')
   usuario2 = input('Usuario 2: ')
@@ -100,107 +70,119 @@ def eliminar_relacion() -> None:
   red_social.eliminar_relaciones(usuario1, usuario2)
 
 # Representacion gráfica
-def mostrar_conexiones() -> None:
+def mostrar_conexiones(red_social: RedSocial) -> None:
   red_social.mostrar_conexiones()
 
-def usuarios_estan_relacionados() -> None:
+def usuarios_estan_relacionados(red_social: RedSocial) -> None:
   print('\nIngrese los nombres de los que quiere ver si estan relacionados')
   usuario1 = input('Usuario 1: ')
   usuario2 = input('Usuario 2: ')
 
   red_social.usuarios_estan_relacionados(usuario1, usuario2)
 
-def recorrido_en_profundidad() -> None:
-  nombre = input('\nIngrese el nombre de el usuario a recorrer:')
+def recorrido_en_profundidad(red_social: RedSocial) -> None:
+  nombre = input('\nIngrese el nombre de el usuario a recorrer: ')
   red_social.recorrido_en_profundidad(nombre)
 
-def recorrido_en_anchura() -> None:
-  nombre = input('\nIngrese el nombre de el usuario a recorrer:')
+def recorrido_en_anchura(red_social: RedSocial) -> None:
+  nombre = input('\nIngrese el nombre de el usuario a recorrer: ')
   red_social.recorrido_en_anchura(nombre)
 
-def amigos_en_comun() -> None:
+def amigos_en_comun(red_social: RedSocial) -> None:
   print('\nIngrese los nombres de los usuarios que quiere ver sus amigos en comun')
   usuario1 = input('Usuario 1: ')
   usuario2 = input('Usuario 2: ')
 
   red_social.amigos_en_comun(usuario1, usuario2)
 
-def cantidad_amigos() -> None:
+def cantidad_amigos(red_social: RedSocial) -> None:
   nombre = input('\nIngrese el nombre de el usuario a ver su cantidad de amigos:')
   red_social.cantidad_amigos(nombre)
 
 # Operaciones Clave
-def recomendar_amigos() -> None:
+def recomendar_amigos(red_social: RedSocial) -> None:
   nombre = input('\nIngrese el nombre de el usuario a recomendar amigos:')
   red_social.recomendar_amigos(nombre)
 
-def detectar_comunidades() -> None:
+def detectar_comunidades(red_social: RedSocial) -> None:
   red_social.detectar_comunidades()
 
-def verificar_conectividad() -> None:
+def verificar_conectividad(red_social: RedSocial) -> None:
   red_social.verificar_conectividad()
 
-def grado_conexion() -> None:
+def grado_conexion(red_social: RedSocial) -> None:
   red_social.grado_de_conexion()
 
-# Menu
-def main():
+
+def menu(red_social: RedSocial, direccion_archivo_red_social):
   while True:
     imprimir_titulo()
     imprimir_opciones()
-    print('0. Salir del programa')
+    print('\n0. Salir del programa')
     
     opcion = validar_opcion()
 
     match(opcion):
       case 1:
-        agregar_usuario()
+        agregar_usuario(red_social)
 
       case 2: 
-        agregar_relacion()
+        agregar_relacion(red_social)
 
       case 3:
-        eliminar_usuario()
+        eliminar_usuario(red_social)
 
       case 4:
-        eliminar_relacion()
+        eliminar_relacion(red_social)
 
       case 5:
-        mostrar_conexiones()
+        mostrar_conexiones(red_social)
 
       case 6: 
-        usuarios_estan_relacionados()
+        usuarios_estan_relacionados(red_social)
 
       case 7:
-        recorrido_en_profundidad()
+        recorrido_en_profundidad(red_social)
 
       case 8:
-        recorrido_en_anchura()
+        recorrido_en_anchura(red_social)
 
       case 9:
-        amigos_en_comun()
+        amigos_en_comun(red_social)
 
       case 10:
-        cantidad_amigos()
+        cantidad_amigos(red_social)
 
       case 11:
-        recomendar_amigos()
+        recomendar_amigos(red_social)
 
       case 12:
-        detectar_comunidades()
+        detectar_comunidades(red_social)
 
       case 13:
-        verificar_conectividad()
+        verificar_conectividad(red_social)
 
       case 14:
-        grado_conexion()
+        grado_conexion(red_social)
 
-    if opcion == 0:
+      case 0:
         # Guardar estructura del grafo
         red_social.guardar_red_social(direccion_archivo_red_social)
         print('Se guardó la red social')
         return
 
+def main():
+  red_social = RedSocial()
+  DIRECCION_ARCHIVO_RED_SOCIAL = 'Implementacion/red_social.pkl'
+
+  # Cargar la red social desde un archivo si existe, de lo contrario crear una nueva
+  try:
+      red_social.cargar_red_social(DIRECCION_ARCHIVO_RED_SOCIAL)
+      print("Red social cargada desde el archivo.")
+  except FileNotFoundError:
+      print("Archivo no encontrado. Se ha creado una nueva red social.")
+  
+  menu(red_social, DIRECCION_ARCHIVO_RED_SOCIAL)
 
 if __name__ == '__main__':
   main()

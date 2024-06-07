@@ -43,19 +43,28 @@ class Arista():
     self.tamanio = 0
 
 def agregar_arista(origen: Arista, dato, destino):
-  nodo = nodo_arista(dato, destino)
-  if origen.inicio is None or origen.inicio.destino > destino:
-    nodo.sig = origen.inicio
-    origen.inicio = nodo
-  else:
-    ant = origen.inicio
-    act = origen.inicio.sig
-    while act is not None and act.destino < nodo.destino:
-      ant = act
-      act = act.sig
-    nodo.sig = act
-    ant.sig = nodo
-  origen.tamanio += 1
+    # Verificar si ya existe una arista entre los vértices
+    aux = origen.inicio
+    while aux is not None:
+        if aux.destino == destino:
+            aux.info = dato
+            return
+        aux = aux.sig
+    
+    # Si no existe la arista, insertar una nueva
+    nodo = nodo_arista(dato, destino)
+    if origen.inicio is None or origen.inicio.destino > destino:
+        nodo.sig = origen.inicio
+        origen.inicio = nodo
+    else:
+        ant = origen.inicio
+        act = origen.inicio.sig
+        while act is not None and act.destino < nodo.destino:
+            ant = act
+            act = act.sig
+        nodo.sig = act
+        ant.sig = nodo
+    origen.tamanio += 1
 
 def buscar_arista(vertice, clave):
   aux = vertice.adyacentes.inicio
@@ -180,7 +189,7 @@ class Grafo():
     while vertice is not None:
       if not vertice.visitado:
         vertice.visitado = True
-        print(vertice.info)
+        print(vertice.info.title())
         adyacentes = vertice.adyacentes.inicio
         while adyacentes is not None:
           adyacente = self.buscar_vertice(adyacentes.destino)
@@ -197,7 +206,7 @@ class Grafo():
         cola.arribo(vertice)
         while not cola.cola_vacia():
           nodo = cola.atencion()
-          print(nodo.info)
+          print(nodo.info.title())
           adyacentes = nodo.adyacentes.inicio
           while adyacentes is not None:
             adyacente = self.buscar_vertice(adyacentes.destino)
@@ -216,21 +225,29 @@ class Grafo():
 
     return conexiones
   
-  def visualizar_grafo(self) -> None:
-        conexiones = self.ver_conexiones()
-        G = nx.Graph()
-        
-        for vertice, adyacentes in conexiones:
-            G.add_node(vertice.title())
-            for adyacente in adyacentes:
-                G.add_edge(vertice.title(), adyacente.title())
-        
-        # Dibujar el grafo
-        plt.figure(figsize=(16, 12))
-        pos = nx.spring_layout(G) 
-        nx.draw(G, pos, with_labels=True, node_size=4000, node_color='skyblue', font_color='black', edge_color='gray', font_weight='bold')
-        plt.title("Visualización del Grafo")
-        plt.show()
+  def visualizar_grafo(self, camino=None) -> None:
+    conexiones = self.ver_conexiones()
+    G = nx.Graph()
+    
+    for vertice, adyacentes in conexiones:
+        G.add_node(vertice.title())
+        for adyacente, peso in adyacentes.items():
+            G.add_edge(vertice.title(), adyacente.title(), weight=peso)
+    
+    pos = nx.spring_layout(G)  # Layout para los nodos
+
+    plt.figure(figsize=(16, 12))
+    nx.draw(G, pos, with_labels=True, node_size=4000, node_color='skyblue', font_color='black', edge_color='gray', font_weight='bold')
+
+    # Extraer los pesos de las aristas para mostrarlos
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_weight='bold')
+
+    # Si se desea mostrar un camino
+    if camino:
+        camino_edges = [(u.title(), v.title()) for u, v in zip(camino, camino[1:])]
+        nx.draw_networkx_edges(G, pos, edgelist=camino_edges, edge_color='red', width=2)
+    plt.show()
 
   def vertices_comunes(self, vertice1: nodo_vertice, vertice2: nodo_vertice) -> list:
     vertices_comunes = []
