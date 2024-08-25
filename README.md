@@ -1,3 +1,5 @@
 # Proyecto Estrucutura de Datos (corte 3)
 
-Marlon Mora y Luis Mosquera
+### Desarrollado por Marlon Mora y Luis Mosquera
+
+Proyecto de implementación de TDA's
